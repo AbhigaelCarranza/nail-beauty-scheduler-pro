@@ -4,6 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calendar, Briefcase, Users, BarChart3, Settings } from "lucide-react";
 import AppointmentsManagement from "@/pages/AppointmentsManagement";
 import ServicesManagement from "@/pages/ServicesManagement";
+import ClientsManagement from "@/components/ClientsManagement";
+import ReportsManagement from "@/components/ReportsManagement";
+import SettingsManagement from "@/components/SettingsManagement";
 
 const ManagementTabs = () => {
   const [activeTab, setActiveTab] = useState("appointments");
@@ -50,108 +53,15 @@ const ManagementTabs = () => {
           </TabsContent>
 
           <TabsContent value="clients" className="mt-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Gestión de Clientes</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Nuevo Cliente</h4>
-                      <p className="text-sm text-muted-foreground">Registrar cliente</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Lista de Clientes</h4>
-                      <p className="text-sm text-muted-foreground">Ver todos los clientes</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Historial</h4>
-                      <p className="text-sm text-muted-foreground">Ver historial de citas</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+            <ClientsManagement />
           </TabsContent>
 
           <TabsContent value="reports" className="mt-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Reportes Financieros</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <BarChart3 className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Ingresos Mensuales</h4>
-                      <p className="text-sm text-muted-foreground">Análisis de ingresos</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <BarChart3 className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Servicios Populares</h4>
-                      <p className="text-sm text-muted-foreground">Top servicios</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <BarChart3 className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Clientes VIP</h4>
-                      <p className="text-sm text-muted-foreground">Mejores clientes</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+            <ReportsManagement />
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Configuración</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <Settings className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Horarios</h4>
-                      <p className="text-sm text-muted-foreground">Configurar horarios</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <Settings className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Información del Salón</h4>
-                      <p className="text-sm text-muted-foreground">Datos de contacto</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <Settings className="w-12 h-12 mx-auto mb-4 text-primary" />
-                      <h4 className="font-semibold">Políticas</h4>
-                      <p className="text-sm text-muted-foreground">Reglas del negocio</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+            <SettingsManagement />
           </TabsContent>
         </Tabs>
       </CardContent>
