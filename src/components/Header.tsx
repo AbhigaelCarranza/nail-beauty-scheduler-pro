@@ -1,12 +1,14 @@
 import { Calendar, Phone, MapPin, Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "@/hooks/useCart";
 import CartSummary from "./CartSummary";
 import BookingModal from "./BookingModal";
 
 const Header = () => {
   const { getItemCount } = useCart();
+  const navigate = useNavigate();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
@@ -44,7 +46,7 @@ const Header = () => {
               variant="outline" 
               size="sm" 
               className="hidden sm:flex"
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => navigate('/dashboard')}
             >
               Dashboard
             </Button>
