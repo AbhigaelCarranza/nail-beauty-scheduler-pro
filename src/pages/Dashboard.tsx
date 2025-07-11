@@ -4,16 +4,11 @@ import {
   Calendar, 
   TrendingUp, 
   Users, 
-  Briefcase, 
   Clock, 
   DollarSign,
-  Settings,
   Bell,
   Search,
-  Plus,
-  BarChart3,
-  FileText,
-  Home
+  Plus
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +18,7 @@ import { useAppointments } from "@/hooks/useAppointments";
 import { useServices } from "@/hooks/useServices";
 import { format, isToday, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
+import ManagementTabs from "@/components/ManagementTabs";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -55,55 +51,6 @@ const Dashboard = () => {
     .sort((a, b) => a.start_time.localeCompare(b.start_time))[0];
 
   const availableSlots = 12 - todayAppointments.length; // Asumiendo 12 slots por día
-
-  const menuItems = [
-    { 
-      title: "Gestión de Citas", 
-      description: "Ver, crear y gestionar citas", 
-      icon: Calendar, 
-      action: () => navigate('/appointments'),
-      color: "bg-blue-500",
-      count: todayAppointments.length
-    },
-    { 
-      title: "Gestión de Servicios", 
-      description: "Administrar servicios y precios", 
-      icon: Briefcase, 
-      action: () => navigate('/services'),
-      color: "bg-green-500",
-      count: services.filter(s => s.is_active).length
-    },
-    { 
-      title: "Gestión de Clientes", 
-      description: "Ver historial y datos de clientes", 
-      icon: Users, 
-      action: () => navigate('/clients'),
-      color: "bg-purple-500",
-      count: uniqueClients
-    },
-    { 
-      title: "Reportes Financieros", 
-      description: "Análisis de ingresos y gastos", 
-      icon: BarChart3, 
-      action: () => navigate('/reports'),
-      color: "bg-yellow-500",
-      count: `$${monthlyRevenue.toLocaleString()}`
-    },
-    { 
-      title: "Configuración", 
-      description: "Horarios y configuración del negocio", 
-      icon: Settings, 
-      action: () => navigate('/settings'),
-      color: "bg-gray-500"
-    },
-    { 
-      title: "Volver al Sitio", 
-      description: "Ir a la página principal", 
-      icon: Home, 
-      action: () => navigate('/'),
-      color: "bg-indigo-500"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
@@ -299,47 +246,8 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Accesos Rápidos */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Gestión del Negocio</CardTitle>
-            <CardDescription>
-              Accede a las diferentes secciones del sistema
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {menuItems.map((item, index) => (
-                <Card 
-                  key={index} 
-                  className="cursor-pointer hover:shadow-md transition-all duration-200 border-border/50 hover:border-primary/30 group"
-                  onClick={item.action}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className={`p-3 rounded-lg ${item.color} group-hover:scale-110 transition-transform`}>
-                        <item.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                          {item.count && (
-                            <Badge variant="secondary" className="text-xs">
-                              {item.count}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Gestión Unificada */}
+        <ManagementTabs />
       </div>
     </div>
   );
