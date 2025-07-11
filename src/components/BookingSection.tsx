@@ -1,7 +1,10 @@
 import { Calendar, Clock, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/useCart";
 
 const BookingSection = () => {
+  const { getTotalPrice, getTotalDuration, getItemCount } = useCart();
+  
   const steps = [
     {
       icon: Calendar,
@@ -19,6 +22,21 @@ const BookingSection = () => {
       description: "Recibe confirmación instantánea"
     }
   ];
+
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    
+    if (hours === 0) return `${mins} min`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}min`;
+  };
+
+  // Si hay items en el carrito, mostrar datos reales
+  const hasCartItems = getItemCount() > 0;
+  const displayPrice = hasCartItems ? getTotalPrice() : 350;
+  const displayDuration = hasCartItems ? formatDuration(getTotalDuration()) : "60 min";
+  const displayServices = hasCartItems ? `${getItemCount()} servicios` : "Manicure Gel";
 
   return (
     <section className="py-20 bg-gradient-to-b from-secondary/20 to-background">
@@ -77,10 +95,11 @@ const BookingSection = () => {
                 </h3>
                 
                 <div className="space-y-2 text-sm text-muted-foreground">
-                  <p><strong className="text-foreground">Servicio:</strong> Manicure Gel</p>
+                  <p><strong className="text-foreground">Servicios:</strong> {displayServices}</p>
+                  <p><strong className="text-foreground">Duración:</strong> {displayDuration}</p>
                   <p><strong className="text-foreground">Fecha:</strong> 15 Jul, 2025</p>
                   <p><strong className="text-foreground">Hora:</strong> 2:00 PM</p>
-                  <p><strong className="text-foreground">Total:</strong> $350 MXN</p>
+                  <p><strong className="text-foreground">Total:</strong> ${displayPrice.toLocaleString()} MXN</p>
                 </div>
                 
                 <div className="mt-4 p-3 bg-primary/10 rounded-lg">
