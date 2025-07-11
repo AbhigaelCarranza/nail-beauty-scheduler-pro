@@ -1,14 +1,18 @@
 import { AlertCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
-import { UseFormReturn } from "react-hook-form";
+import { Label } from "@/components/ui/label";
 
 interface BusinessPoliciesFormProps {
-  form: UseFormReturn<any>;
+  data: {
+    booking_advance_days: number;
+    reminder_hours_before: number;
+    cancellation_hours_before: number;
+  };
+  onInputChange: (field: string, value: number) => void;
 }
 
-const BusinessPoliciesForm = ({ form }: BusinessPoliciesFormProps) => {
+const BusinessPoliciesForm = ({ data, onInputChange }: BusinessPoliciesFormProps) => {
   return (
     <Card>
       <CardHeader>
@@ -20,74 +24,50 @@ const BusinessPoliciesForm = ({ form }: BusinessPoliciesFormProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          <FormField
-            control={form.control}
-            name="booking_advance_days"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Días de anticipación para reservas</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="1" 
-                    max="365"
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Máximo de días que los clientes pueden reservar por adelantado
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="booking_advance_days">Días de anticipación para reservas</Label>
+            <Input 
+              id="booking_advance_days"
+              type="number" 
+              min="1" 
+              max="365"
+              value={data.booking_advance_days}
+              onChange={(e) => onInputChange('booking_advance_days', parseInt(e.target.value) || 1)}
+            />
+            <p className="text-sm text-muted-foreground">
+              Máximo de días que los clientes pueden reservar por adelantado
+            </p>
+          </div>
 
-          <FormField
-            control={form.control}
-            name="reminder_hours_before"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Recordatorio antes de la cita (horas)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="1" 
-                    max="168"
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Cuántas horas antes enviar el recordatorio
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="reminder_hours_before">Recordatorio antes de la cita (horas)</Label>
+            <Input 
+              id="reminder_hours_before"
+              type="number" 
+              min="1" 
+              max="168"
+              value={data.reminder_hours_before}
+              onChange={(e) => onInputChange('reminder_hours_before', parseInt(e.target.value) || 1)}
+            />
+            <p className="text-sm text-muted-foreground">
+              Cuántas horas antes enviar el recordatorio
+            </p>
+          </div>
 
-          <FormField
-            control={form.control}
-            name="cancellation_hours_before"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cancelación sin penalización (horas)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="1" 
-                    max="72"
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Tiempo mínimo para cancelar sin penalización
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="cancellation_hours_before">Cancelación sin penalización (horas)</Label>
+            <Input 
+              id="cancellation_hours_before"
+              type="number" 
+              min="1" 
+              max="72"
+              value={data.cancellation_hours_before}
+              onChange={(e) => onInputChange('cancellation_hours_before', parseInt(e.target.value) || 1)}
+            />
+            <p className="text-sm text-muted-foreground">
+              Tiempo mínimo para cancelar sin penalización
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

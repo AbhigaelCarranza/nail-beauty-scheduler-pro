@@ -1,55 +1,32 @@
 import { useState, useEffect } from "react";
-import { useBusinessConfig, useBusinessHours, useUpdateBusinessConfig, useUpdateBusinessHours } from "@/hooks/useBusinessConfig";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useBusinessConfig, useUpdateBusinessConfig } from "@/hooks/useBusinessConfig";
 import BusinessInfoForm from "@/components/BusinessInfoForm";
 import BusinessPoliciesForm from "@/components/BusinessPoliciesForm";
 import BasicBusinessHours from "@/components/BasicBusinessHours";
 
-const businessConfigSchema = z.object({
-  salon_name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  salon_description: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().email("Email inválido").optional().or(z.literal("")),
-  address: z.string().optional(),
-  booking_advance_days: z.number().min(1).max(365),
-  reminder_hours_before: z.number().min(1).max(168),
-  cancellation_hours_before: z.number().min(1).max(72),
-});
-
-type BusinessConfigFormData = z.infer<typeof businessConfigSchema>;
-
 
 const SettingsManagement = () => {
   const businessConfigQuery = useBusinessConfig();
-  const businessHoursQuery = useBusinessHours();
-  
   const businessConfig = businessConfigQuery?.data;
   const configLoading = businessConfigQuery?.isLoading || false;
-  const hours = businessHoursQuery?.data || [];
-  const hoursLoading = businessHoursQuery?.isLoading || false;
   const updateConfig = useUpdateBusinessConfig();
-  const updateHours = useUpdateBusinessHours();
 
-  const form = useForm<BusinessConfigFormData>({
-    resolver: zodResolver(businessConfigSchema),
-    defaultValues: {
-      salon_name: "Bella Nails",
-      salon_description: "",
-      phone: "",
-      email: "",
-      address: "",
-      booking_advance_days: 30,
-      reminder_hours_before: 24,
-      cancellation_hours_before: 4,
-    },
+  // Simple state instead of useForm
+  const [formData, setFormData] = useState({
+    salon_name: "Bella Nails",
+    salon_description: "",
+    phone: "",
+    email: "",
+    address: "",
+    booking_advance_days: 30,
+    reminder_hours_before: 24,
+    cancellation_hours_before: 4,
   });
 
-  // Update form when data loads
+  // Update local state when data loads from server
   useEffect(() => {
     if (businessConfig) {
-      form.reset({
+      setFormData({
         salon_name: businessConfig.salon_name || "Bella Nails",
         salon_description: businessConfig.salon_description || "",
         phone: businessConfig.phone || "",
@@ -60,21 +37,17 @@ const SettingsManagement = () => {
         cancellation_hours_before: businessConfig.cancellation_hours_before || 4,
       });
     }
-  }, [businessConfig, form]);
+  }, [businessConfig]);
 
-  const handleConfigSubmit = (data: BusinessConfigFormData) => {
-    updateConfig.mutate(data);
+  const handleInputChange = (field: string, value: string | number) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleHoursSave = (hoursData: any[]) => {
-    const cleanData = hoursData.map(hour => {
-      const { id, created_at, updated_at, ...cleanHour } = hour || {};
-      return cleanHour;
-    });
-    updateHours.mutate(cleanData);
+  const handleConfigSubmit = () => {
+    updateConfig.mutate(formData);
   };
 
-  if (configLoading || hoursLoading) {
+  if (configLoading) {
     return <div>Cargando configuración...</div>;
   }
 
@@ -87,11 +60,25 @@ const SettingsManagement = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <BusinessInfoForm 
-          form={form}
+          data={{
+            salon_name: formData.salon_name,
+            salon_description: formData.salon_description,
+            phone: formData.phone,
+            email: formData.email,
+            address: formData.address,
+          }}
+          onInputChange={handleInputChange}
           onSubmit={handleConfigSubmit}
           isLoading={updateConfig.isPending}
         />
-        <BusinessPoliciesForm form={form} />
+        <BusinessPoliciesForm 
+          data={{
+            booking_advance_days: formData.booking_advance_days,
+            reminder_hours_before: formData.reminder_hours_before,
+            cancellation_hours_before: formData.cancellation_hours_before,
+          }}
+          onInputChange={handleInputChange}
+        />
       </div>
 
       <BasicBusinessHours />
