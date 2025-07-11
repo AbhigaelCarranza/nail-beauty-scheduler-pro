@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import BusinessInfoForm from "@/components/BusinessInfoForm";
 import BusinessPoliciesForm from "@/components/BusinessPoliciesForm";
-import SimpleBusinessHours from "@/components/SimpleBusinessHours";
+import BasicBusinessHours from "@/components/BasicBusinessHours";
 
 const businessConfigSchema = z.object({
   salon_name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
@@ -94,11 +94,7 @@ const SettingsManagement = () => {
         <BusinessPoliciesForm form={form} />
       </div>
 
-      <SimpleBusinessHours 
-        initialHours={hours}
-        onSave={handleHoursSave}
-        isLoading={updateHours.isPending}
-      />
+      <BasicBusinessHours />
     </div>
   );
 };
