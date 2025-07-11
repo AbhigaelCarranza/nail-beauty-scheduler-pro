@@ -106,6 +106,36 @@ export type Database = {
           },
         ]
       }
+      blocked_time_slots: {
+        Row: {
+          block_date: string
+          created_at: string
+          end_time: string
+          id: string
+          reason: string | null
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          block_date: string
+          created_at?: string
+          end_time: string
+          id?: string
+          reason?: string | null
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          block_date?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          reason?: string | null
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       business_config: {
         Row: {
           address: string | null

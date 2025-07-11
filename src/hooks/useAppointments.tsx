@@ -194,10 +194,28 @@ export const useBusinessHours = () => {
   });
 };
 
+// Hook para obtener horarios bloqueados
+export const useBlockedTimeSlotsForDate = (date: string) => {
+  return useQuery({
+    queryKey: ['blocked-time-slots', date],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blocked_time_slots')
+        .select('*')
+        .eq('block_date', date);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!date,
+  });
+};
+
 // Hook para verificar disponibilidad de horarios
 export const useAvailableTimeSlots = (date: string, durationMinutes: number) => {
   const { data: appointments } = useAppointmentsByDate(date);
   const { data: businessHours } = useBusinessHours();
+  const { data: blockedSlots } = useBlockedTimeSlotsForDate(date);
 
   const getAvailableSlots = () => {
     if (!businessHours || !appointments) return [];
@@ -228,8 +246,16 @@ export const useAvailableTimeSlots = (date: string, durationMinutes: number) => 
           
           return (start < aptEnd && slotEnd > aptStart);
         });
+
+        // Verificar que no está bloqueado
+        const isNotBlocked = !blockedSlots?.some(blocked => {
+          const blockedStart = new Date(`1970-01-01T${blocked.start_time}:00`);
+          const blockedEnd = new Date(`1970-01-01T${blocked.end_time}:00`);
+          
+          return (start < blockedEnd && slotEnd > blockedStart);
+        });
         
-        if (isAvailable) {
+        if (isAvailable && isNotBlocked) {
           slots.push(timeSlot);
         }
       }
