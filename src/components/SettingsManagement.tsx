@@ -66,19 +66,30 @@ const SettingsManagement = () => {
 
   // Initialize business hours when data loads
   useEffect(() => {
+    const defaultDays = [
+      { value: 0, label: "Domingo" },
+      { value: 1, label: "Lunes" },
+      { value: 2, label: "Martes" },
+      { value: 3, label: "Miércoles" },
+      { value: 4, label: "Jueves" },
+      { value: 5, label: "Viernes" },
+      { value: 6, label: "Sábado" },
+    ];
+
     if (hours && hours.length > 0) {
-      setBusinessHours(hours);
+      // Ensure we have an entry for each day of the week
+      const completeHours = defaultDays.map(day => {
+        const existingHour = hours.find(h => h?.day_of_week === day.value);
+        return existingHour || {
+          day_of_week: day.value,
+          start_time: "09:00",
+          end_time: "18:00",
+          is_closed: day.value === 0, // Sunday closed by default
+        };
+      });
+      setBusinessHours(completeHours);
     } else if (hours !== undefined) {
       // Default hours if none exist but data has loaded
-      const defaultDays = [
-        { value: 0, label: "Domingo" },
-        { value: 1, label: "Lunes" },
-        { value: 2, label: "Martes" },
-        { value: 3, label: "Miércoles" },
-        { value: 4, label: "Jueves" },
-        { value: 5, label: "Viernes" },
-        { value: 6, label: "Sábado" },
-      ];
       setBusinessHours(
         defaultDays.map(day => ({
           day_of_week: day.value,
@@ -97,13 +108,32 @@ const SettingsManagement = () => {
   const handleHoursUpdate = (dayIndex: number, field: string, value: any) => {
     if (!businessHours) return;
     const updatedHours = [...businessHours];
-    updatedHours[dayIndex] = { ...updatedHours[dayIndex], [field]: value };
+    
+    // Find the correct day by day_of_week or create a new entry
+    const existingDay = updatedHours.find(h => h?.day_of_week === dayIndex);
+    const dayData = existingDay || { day_of_week: dayIndex, start_time: "09:00", end_time: "18:00", is_closed: false };
+    
+    // Update the specific day
+    const updatedDay = { ...dayData, [field]: value };
+    
+    // Replace or add the day in the array
+    const existingIndex = updatedHours.findIndex(h => h?.day_of_week === dayIndex);
+    if (existingIndex >= 0) {
+      updatedHours[existingIndex] = updatedDay;
+    } else {
+      updatedHours.push(updatedDay);
+    }
+    
     setBusinessHours(updatedHours);
   };
 
   const saveBusinessHours = () => {
     if (!businessHours || businessHours.length === 0) return;
-    const hoursData = businessHours.map(({ id, created_at, updated_at, ...hour }) => hour);
+    const validHours = businessHours.filter(hour => hour && typeof hour === 'object');
+    const hoursData = validHours.map(hour => {
+      const { id, created_at, updated_at, ...cleanHour } = hour;
+      return cleanHour;
+    });
     updateHours.mutate(hoursData);
   };
 
