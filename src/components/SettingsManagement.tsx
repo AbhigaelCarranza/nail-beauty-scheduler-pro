@@ -76,10 +76,10 @@ const SettingsManagement = () => {
 
   // Initialize business hours when data loads
   useEffect(() => {
-    if (hours.length > 0) {
+    if (hours && hours.length > 0) {
       setBusinessHours(hours);
-    } else {
-      // Default hours if none exist
+    } else if (hours !== undefined) {
+      // Default hours if none exist but data has loaded
       setBusinessHours(
         DAYS_OF_WEEK.map(day => ({
           day_of_week: day.value,
@@ -96,12 +96,14 @@ const SettingsManagement = () => {
   };
 
   const handleHoursUpdate = (dayIndex: number, field: string, value: any) => {
+    if (!businessHours) return;
     const updatedHours = [...businessHours];
     updatedHours[dayIndex] = { ...updatedHours[dayIndex], [field]: value };
     setBusinessHours(updatedHours);
   };
 
   const saveBusinessHours = () => {
+    if (!businessHours || businessHours.length === 0) return;
     const hoursData = businessHours.map(({ id, created_at, updated_at, ...hour }) => hour);
     updateHours.mutate(hoursData);
   };
@@ -313,8 +315,9 @@ const SettingsManagement = () => {
         <CardContent>
           <div className="space-y-4">
             {DAYS_OF_WEEK.map((day, index) => {
-              const hourData = businessHours.find(h => h.day_of_week === day.value) || 
-                              businessHours[index] || 
+              const safeBusinessHours = businessHours || [];
+              const hourData = safeBusinessHours.find(h => h?.day_of_week === day.value) || 
+                              safeBusinessHours[index] || 
                               { day_of_week: day.value, start_time: "09:00", end_time: "18:00", is_closed: false };
               
               return (
