@@ -39,8 +39,13 @@ const DAYS_OF_WEEK = [
 const SettingsManagement = () => {
   const [businessHours, setBusinessHours] = useState<any[]>([]);
   
-  const { data: businessConfig, isLoading: configLoading } = useBusinessConfig();
-  const { data: hours = [], isLoading: hoursLoading } = useBusinessHours();
+  const businessConfigQuery = useBusinessConfig();
+  const businessHoursQuery = useBusinessHours();
+  
+  const businessConfig = businessConfigQuery?.data;
+  const configLoading = businessConfigQuery?.isLoading || false;
+  const hours = businessHoursQuery?.data || [];
+  const hoursLoading = businessHoursQuery?.isLoading || false;
   const updateConfig = useUpdateBusinessConfig();
   const updateHours = useUpdateBusinessHours();
 
