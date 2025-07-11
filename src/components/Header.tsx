@@ -1,7 +1,12 @@
-import { Calendar, Phone, MapPin, Menu } from "lucide-react";
+import { Calendar, Phone, MapPin, Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useCart } from "@/hooks/useCart";
+import CartSummary from "./CartSummary";
 
 const Header = () => {
+  const { getItemCount } = useCart();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
       <div className="container mx-auto px-4 py-4">
@@ -31,8 +36,25 @@ const Header = () => {
             </div>
           </div>
 
-          {/* CTA Button */}
+          {/* Actions */}
           <div className="flex items-center space-x-3">
+            {/* Cart */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="w-5 h-5" />
+                  {getItemCount() > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                      {getItemCount()}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-96 p-0" align="end">
+                <CartSummary className="border-none shadow-none" />
+              </PopoverContent>
+            </Popover>
+
             <Button variant="luxury" className="hidden sm:flex">
               <Calendar className="w-4 h-4 mr-2" />
               Agendar Cita

@@ -64,33 +64,16 @@ const ServicesSection = () => {
           </p>
         </div>
 
-        {/* Services and Cart Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Services Grid */}
-          <div className="lg:col-span-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {services.map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
-            </div>
-            
-            {services.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">No hay servicios disponibles en este momento.</p>
-              </div>
-            )}
-          </div>
-
-          {/* Cart Summary - Desktop */}
-          <div className="hidden lg:block">
-            <CartSummary />
-          </div>
+        {/* Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {services.map((service) => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
         </div>
-
-        {/* Cart Summary - Mobile (Fixed Bottom) */}
-        {getItemCount() > 0 && (
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t p-4">
-            <CartSummary className="shadow-lg" />
+        
+        {services.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No hay servicios disponibles en este momento.</p>
           </div>
         )}
 

@@ -2,6 +2,7 @@ import { ShoppingCart, Clock, Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import BookingModal from "./BookingModal";
 
 interface CartSummaryProps {
   className?: string;
@@ -111,14 +112,16 @@ const CartSummary = ({ className = "" }: CartSummaryProps) => {
         </div>
 
         {/* Checkout Button */}
-        <Button 
-          variant="luxury" 
-          className="w-full text-base py-6"
-          disabled={items.length === 0}
-        >
-          <Calendar className="w-5 h-5 mr-2" />
-          Elegir Horario
-        </Button>
+        <BookingModal>
+          <Button 
+            variant="luxury" 
+            className="w-full text-base py-6"
+            disabled={items.length === 0}
+          >
+            <Calendar className="w-5 h-5 mr-2" />
+            Elegir Horario
+          </Button>
+        </BookingModal>
 
         {/* Info */}
         <div className="bg-primary/10 rounded-lg p-3">
