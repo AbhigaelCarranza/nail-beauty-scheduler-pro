@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
@@ -6,25 +6,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format, addDays, isBefore, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { useAvailableTimeSlots } from "@/hooks/useAppointments";
 
 interface DateTimePickerProps {
   onDateTimeSelect: (date: Date, time: string) => void;
+  totalDurationMinutes?: number;
   className?: string;
 }
 
-const DateTimePicker = ({ onDateTimeSelect, className }: DateTimePickerProps) => {
+const DateTimePicker = ({ onDateTimeSelect, totalDurationMinutes = 60, className }: DateTimePickerProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
 
-  // Horarios disponibles (9:00 AM - 7:00 PM)
-  const availableTimes = [
-    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
-    "18:00", "18:30", "19:00"
-  ];
+  // Obtener horarios disponibles basados en la fecha seleccionada
+  const dateString = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
+  const availableSlots = useAvailableTimeSlots(dateString, totalDurationMinutes);
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
@@ -118,19 +116,25 @@ const DateTimePicker = ({ onDateTimeSelect, className }: DateTimePickerProps) =>
               <h4 className="font-medium text-sm text-foreground mb-3">
                 Horarios disponibles
               </h4>
-              <div className="grid grid-cols-3 gap-2">
-                {availableTimes.map((time) => (
-                  <Button
-                    key={time}
-                    variant={selectedTime === time ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => handleTimeSelect(time)}
-                    className="text-sm"
-                  >
-                    {time}
-                  </Button>
-                ))}
-              </div>
+              {availableSlots.length > 0 ? (
+                <div className="grid grid-cols-3 gap-2">
+                  {availableSlots.map((time) => (
+                    <Button
+                      key={time}
+                      variant={selectedTime === time ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => handleTimeSelect(time)}
+                      className="text-sm"
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No hay horarios disponibles para esta fecha
+                </p>
+              )}
             </div>
           </PopoverContent>
         </Popover>

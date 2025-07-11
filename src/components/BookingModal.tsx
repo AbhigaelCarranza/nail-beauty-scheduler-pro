@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/hooks/useCart";
+import { useCreateAppointment } from "@/hooks/useAppointments";
 import DateTimePicker from "./DateTimePicker";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,6 +16,7 @@ interface BookingModalProps {
 
 const BookingModal = ({ children }: BookingModalProps) => {
   const { items, getTotalPrice, getTotalDuration, clearCart } = useCart();
+  const createAppointment = useCreateAppointment();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1); // 1: DateTime, 2: ClientInfo, 3: Confirmation
@@ -48,11 +50,40 @@ const BookingModal = ({ children }: BookingModalProps) => {
   };
 
   const handleFinalSubmit = async () => {
+    if (!selectedDateTime) return;
+    
     setIsSubmitting(true);
     
     try {
-      // Aquí iría la lógica para guardar en Supabase
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulación
+      // Calcular tiempo de fin
+      const startTime = selectedDateTime.time;
+      const totalMinutes = getTotalDuration();
+      const [hours, minutes] = startTime.split(':').map(Number);
+      const startDate = new Date();
+      startDate.setHours(hours, minutes, 0, 0);
+      const endDate = new Date(startDate.getTime() + totalMinutes * 60000);
+      const endTime = `${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`;
+
+      await createAppointment.mutateAsync({
+        client: {
+          name: clientData.name,
+          whatsapp: clientData.whatsapp,
+          email: clientData.email || undefined,
+          notes: clientData.notes || undefined,
+        },
+        appointment: {
+          appointment_date: selectedDateTime.date.toISOString().split('T')[0],
+          start_time: startTime,
+          end_time: endTime,
+          total_price: getTotalPrice(),
+          total_duration_minutes: totalMinutes,
+          notes: clientData.notes || undefined,
+        },
+        services: items.map(item => ({
+          service_id: item.service.id,
+          price: item.service.price,
+        })),
+      });
       
       toast({
         title: "¡Cita agendada exitosamente!",
@@ -67,6 +98,7 @@ const BookingModal = ({ children }: BookingModalProps) => {
       setIsOpen(false);
       
     } catch (error) {
+      console.error('Error creating appointment:', error);
       toast({
         title: "Error al agendar",
         description: "Hubo un problema. Por favor intenta de nuevo.",
@@ -107,7 +139,10 @@ const BookingModal = ({ children }: BookingModalProps) => {
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-lg mb-4">Selecciona fecha y hora</h3>
-              <DateTimePicker onDateTimeSelect={handleDateTimeSelect} />
+              <DateTimePicker 
+                onDateTimeSelect={handleDateTimeSelect} 
+                totalDurationMinutes={getTotalDuration()}
+              />
             </div>
             
             {selectedDateTime && (

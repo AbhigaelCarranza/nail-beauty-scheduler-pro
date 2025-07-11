@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useCart } from "@/hooks/useCart";
 import CartSummary from "./CartSummary";
+import BookingModal from "./BookingModal";
 
 const Header = () => {
   const { getItemCount } = useCart();
@@ -55,10 +56,12 @@ const Header = () => {
               </PopoverContent>
             </Popover>
 
-            <Button variant="luxury" className="hidden sm:flex">
-              <Calendar className="w-4 h-4 mr-2" />
-              Agendar Cita
-            </Button>
+            <BookingModal>
+              <Button variant="luxury" className="hidden sm:flex">
+                <Calendar className="w-4 h-4 mr-2" />
+                Agendar Cita
+              </Button>
+            </BookingModal>
             <Button variant="ghost" size="icon" className="sm:hidden">
               <Menu className="w-5 h-5" />
             </Button>
