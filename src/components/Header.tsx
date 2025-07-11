@@ -39,6 +39,16 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-3">
+            {/* Dashboard */}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="hidden sm:flex"
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              Dashboard
+            </Button>
+
             {/* Cart */}
             <Popover>
               <PopoverTrigger asChild>
