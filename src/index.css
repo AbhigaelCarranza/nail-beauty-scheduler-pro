@@ -2,41 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Beauty Salon Design System - Elegant & Luxurious
+All colors MUST be HSL for proper design system implementation.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - soft pearl whites */
+    --background: 340 30% 98%;
+    --foreground: 340 15% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Card system - elegant containers */
+    --card: 340 50% 99%;
+    --card-foreground: 340 15% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Popover system */
+    --popover: 340 50% 99%;
+    --popover-foreground: 340 15% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - rose gold luxury */
+    --primary: 340 70% 65%;
+    --primary-foreground: 340 50% 99%;
+    --primary-glow: 340 85% 75%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - warm cream */
+    --secondary: 35 40% 95%;
+    --secondary-foreground: 340 15% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted - soft neutrals */
+    --muted: 340 20% 96%;
+    --muted-foreground: 340 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - golden highlights */
+    --accent: 45 95% 80%;
+    --accent-foreground: 340 15% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive - elegant error state */
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 340 50% 99%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs - subtle definition */
+    --border: 340 20% 90%;
+    --input: 340 20% 94%;
+    --ring: 340 70% 65%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Luxury gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+    
+    /* Elegant shadows */
+    --shadow-luxury: 0 20px 60px -10px hsl(var(--primary) / 0.3);
+    --shadow-card: 0 8px 32px -8px hsl(var(--primary) / 0.15);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +124,79 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  /* Luxury button variants */
+  .btn-luxury {
+    @apply bg-gradient-to-r from-primary to-primary-glow;
+    @apply text-primary-foreground font-semibold;
+    @apply px-8 py-4 rounded-xl;
+    @apply shadow-luxury;
+    @apply transition-all duration-300;
+    @apply hover:scale-105 hover:shadow-glow;
+  }
+  
+  .btn-elegant {
+    @apply bg-card border-2 border-primary/20;
+    @apply text-primary font-medium;
+    @apply px-6 py-3 rounded-lg;
+    @apply transition-all duration-300;
+    @apply hover:border-primary hover:bg-primary/5;
+    @apply hover:scale-102;
+  }
+
+  /* Card styles */
+  .card-luxury {
+    @apply bg-gradient-to-br from-card to-secondary/50;
+    @apply border border-border/50;
+    @apply rounded-2xl p-6;
+    @apply shadow-card;
+    @apply transition-all duration-300;
+    @apply hover:shadow-luxury hover:scale-102;
+  }
+
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent;
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Animations */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+}
+
+@layer utilities {
+  /* Scale utilities */
+  .scale-102 {
+    transform: scale(1.02);
+  }
+}
+
+/* Keyframes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 20px hsl(var(--primary-glow) / 0.4));
+  }
+  to {
+    filter: drop-shadow(0 0 30px hsl(var(--primary-glow) / 0.8));
   }
 }
